@@ -1,13 +1,7 @@
-from flask import Flask, render_template
-from flask import request
-import os
-from flask_sqlalchemy import SQLAlchemy
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-
+from flask import Flask
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-bd = SQLAlchemy(app)
+@app.route("/")
+def index():
+    return "<h1>Hello World</h1>"
+
