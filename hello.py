@@ -1,42 +1,25 @@
-from flask import Flask, render_template, session, redirect, url_for, flash
-from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
-
+from flask import Flask
+from flask import escape, url_for
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "hard to guess string"
 
-bootstrap = Bootstrap(app)
+@app.route('/')
+@app.route('/index')
+@app.route('/home')
+def hello():
+    return 'Welcome to My Watchlist!'
 
-class NameForm(FlaskForm):
-    name = StringField("What is your name?", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+@app.route('/user/<name>')
+def user_page(name):
+    return 'User: %s' % escape(name)
 
-# 如果新提交的名字和之前存储的名字不同，则会调用flash函数
-# 如果只调用flash函数并不能显示出来，需要使用模版进行渲染
-@app.route("/", methods=["GET", "POST"])
-def index():
-    form = NameForm()
-    if form.validate_on_submit():
-        old_name = session.get("name")
-        if old_name is not None and old_name != form.name.data:
-            flash("looks like you have changed your name!")
-        session["name"] = form.name.data
-        return redirect(url_for("index"))
-    return render_template("index.html", form=form, name=session.get("name"))
-
-
-@app.route("/user/<name>")
-def user(name):
-    return render_template("user.html", name=name)
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template("404.html"), 404
-
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template("500.html"), 500
+@app.route('/test')
+def test_url_for():
+    # 下面是一些调用示例（请在命令行窗口查看输出的 URL）：
+    print(url_for('hello'))  # 输出：/
+    # 注意下面两个调用是如何生成包含 URL 变量的 URL 的
+    print(url_for('user_page', name='greyli'))  # 输出：/user/greyli
+    print(url_for('user_page', name='peter'))  # 输出：/user/peter
+    print(url_for('test_url_for'))  # 输出：/test
+    # 下面这个调用传入了多余的关键字参数，它们会被作为查询字符串附加到 URL 后面。
+    print(url_for('test_url_for', num=2))  # 输出：/test?num=2
+    return 'Test page'
