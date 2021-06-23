@@ -64,11 +64,23 @@ class Movie(db.Model):
     year = db.Column(db.String(4))
 
 
+# 对于多个模板内都需要使用的变量, 使用 app.context_processor 装饰器注册一个模板上下文处理函数
+# 这个函数返回的变量（以字典键值对的形式）将会统一注入到每一个模板的上下文环境中
+@app.context_processor
+def inject_user():
+    user = User.query.first()
+    return dict(user=user)  # 需要返回字典，等同于 return {'user': user}
+
+
+@app.errorhandler(404)  # 传入要处理的错误代码
+def page_not_found(e):  # 接受异常对象作为参数
+    return render_template("404.html"), 404  # 返回模板和状态码
+
+
 @app.route('/')
 def index():
-    user = User.query.first()
     movies = Movie.query.all()
-    return render_template("index.html", user=user, movies=movies)
+    return render_template("index.html", movies=movies)
 
 
 @app.route('/user/<name>')

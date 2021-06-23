@@ -1,23 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>{{ user.name }}'s Watchlist</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
-</head>
-<body>
-    <h2>{{ user.name }}'s Watchlist</h2>
-    <img alt="Avatar" src="{{ url_for('static', filename='images/f2.jpeg') }}">
-    {# 使用 length 过滤器获取 movies 变量的长度 #}
-    <p>{{ movies|length }} Titles</p>
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>{{ movie | length }} Titles</p>
     <ul class="movie-list">
-        {% for movie in movies %}  {# 迭代 movies 变量 #}
-        <li>{{ movie.title }} - {{ movie.year }}</li>  {# 等同于 movie['title'] #}
-        {% endfor %}  {# 使用 endfor 标签结束 for 语句 #}
+        {% for moive in movies %}
+        <li>
+            {{ moive.title }} - {{ moive.year }}
+        </li>
+        {% endfor %}
     </ul>
-    <img rel="test" class="totoro" href="{{ url_for('static', filename='images/f1.jpeg') }}">
-    <footer>
-        <small>&copy; 2018 <a href="http://helloflask.com/tutorial">HelloFlask</a></small>
-    </footer>
-</body>
-</html>
+{% endblock %}
